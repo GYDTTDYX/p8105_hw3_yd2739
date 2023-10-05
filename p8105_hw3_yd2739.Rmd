@@ -213,3 +213,87 @@ NY_distribution_plot = NY_distribution_df|>
 NY_distribution_plot
 ```
 
+## Problem 3
+```{r}
+#import data and data cleaning
+demo_df = 
+  read_csv("DATA/nhanes_covar.csv", skip = 4)|>
+  janitor::clean_names()|>
+  drop_na()|>
+  subset(
+    age >= 21
+  )|>
+  mutate(
+    sex = recode(sex, "1" = "male", "2" = "female"),
+    education = recode(education, "1" = "Less than high school", 
+                   "2" = "High school equivalent", 
+                   "3" = "More than high school"), 
+    sex = factor(sex), 
+    education = factor(education)
+  )
+
+acc_df = 
+  read_csv("DATA/nhanes_accel.csv")|>
+  janitor::clean_names()
+
+merged_acc_info_df= left_join(demo_df, acc_df, by = join_by(seqn))
+
+head(merged_acc_info_df)|>
+  knitr::kable()
+
+```
+
+```{r}
+sex_vs_edu_df  = merged_acc_info_df|>
+  group_by(sex, education)|>
+  summarize(counts = n())|>
+  pivot_wider(names_from = sex, values_from = counts)
+  
+sex_vs_edu_df|>knitr::kable()
+```
+
+```{r}
+sex_vs_edu_age_df  = merged_acc_info_df|>
+  group_by(sex, education)|>
+  summarize(mean_age = mean(age, na.rm = TRUE))
+
+sex_vs_edu_age_plot = merged_acc_info_df|>
+  ggplot(aes(x = age, color = sex))+
+  geom_histogram(fill = "white")+
+  facet_grid(. ~ education)
+sex_vs_edu_age_plot
+```
+
+From the plot, we could see the trend that for people who have high school degree, more of them are younger people. For people who have less than high school degree, more of them are older people. 
+
+```{r}
+acc_info_agg_df = merged_acc_info_df|>
+  mutate(
+    aggregate_move = rowSums(select(merged_acc_info_df, starts_with("min")))
+  )
+
+agg_age_plot = acc_info_agg_df|>
+  ggplot(aes(x = age, y = aggregate_move, color = sex))+
+  geom_point(alpha = .5)+
+  geom_smooth()+
+  facet_grid(. ~ education)
+agg_age_plot
+```
+We could observe that as age exceed 60, all movement starts to decrease. In high school group and more than high school group, females shows higher movement compare to male, while less than high school group, male's movement exceed female's movement. 
+```{r}
+grouped_24hr_avg_df = merged_acc_info_df|>
+  group_by(education, sex)|>
+  summarise(across(starts_with("min"), ~ mean(.), .names = "mean_{.col}"))|>
+  pivot_longer(cols = starts_with("mean_"), names_to = "time", values_to = "mean")|>
+  mutate(
+    time = substring(time, 9), 
+    time= as.numeric(time)
+  )
+grouped_24hr_avg_plot = grouped_24hr_avg_df|>
+  ggplot(aes(x = time, y = mean, color = sex))+
+  geom_line()+
+  facet_grid(. ~ education)
+grouped_24hr_avg_plot
+```
+
+We could observe from the graph that for people have more than high school degree, average movement for female is higher than average movement for male.A All people shows low movement from 0 to 250min, this is probably they are sleeping. 

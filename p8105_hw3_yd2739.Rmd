@@ -138,5 +138,78 @@ apples_coffee_df
 ```
 
 
+## Problem 2
+```{r}
+#data cleaning
+data("brfss_smart2010")
+BRFSS_cleaned = brfss_smart2010 |>
+  janitor::clean_names()|>
+  subset(
+    topic == "Overall Health"
+  )|>
+  subset(
+    response == "Excellent" | response == "Very Good" | response == "Good"|response == "Fair"|response == "Poor"
+  )|>
+  mutate(
+    response = factor(response, level=c("Poor", "Fair", "Good", "Very Good", "Excellent"))
+  )
+```
 
+```{r}
+seven_or_more_2002 = BRFSS_cleaned|>
+  subset(year == 2002)|>
+  group_by(locationabbr)|>
+  summarize(n_loc = n_distinct(locationdesc))|>
+  subset(n_loc >= 7)|>
+  arrange(desc(n_loc))
+seven_or_more_2002|>
+  knitr::kable()
+  
+```
+
+In 2002, `r seven_or_more_2002[[1]]` are states observed at 7 or more locations. 
+```{r}
+seven_or_more_2010 = BRFSS_cleaned|>
+  subset(year == 2010)|>
+  group_by(locationabbr)|>
+  summarize(n_loc = n_distinct(locationdesc))|>
+  subset(n_loc >= 7)|>
+  arrange(desc(n_loc))
+seven_or_more_2010|>
+  knitr::kable()
+```
+In 2002, `r seven_or_more_2010[[1]]` are states observed at 7 or more locations. 
+
+```{r}
+excellent_df = BRFSS_cleaned|>
+  subset(
+    response == "Excellent"
+  )|>
+  group_by(year, locationabbr)|>
+  summarize(mean_data_value = mean(data_value))
+
+excellent_plot = excellent_df|>
+  ggplot(aes(x = year, y = mean_data_value))+
+  geom_line(aes(color = locationabbr))
+excellent_plot
+```
+
+I'm not sure this is the plot we required to do. It looks not tidy and hard for any interpretation. 
+
+```{r}
+NY_distribution_df = BRFSS_cleaned|>
+  subset(
+    locationabbr == "NY"
+  )|>
+  subset(
+    year == 2006 | year == 2010
+  )
+
+NY_distribution_plot = NY_distribution_df|>
+  ggplot(aes(x = data_value, fill = locationdesc)) + 
+  geom_density(alpha = .3, adjust = .75)+
+  facet_grid(. ~ year)
+
+NY_distribution_plot
+```
 

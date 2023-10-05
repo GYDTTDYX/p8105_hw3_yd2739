@@ -1,0 +1,136 @@
+---
+title: "p8105_hw3_yd2739"
+author: "Yuxuan Du"
+date: "2023-10-05"
+output: github_document
+---
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+```
+## Problem 1
+
+```{r}
+data("instacart")
+tidy_instacart = instacart |>
+  janitor::clean_names()
+```
+the size of the dataset is `r nrow(tidy_instacart)` x `r ncol(tidy_instacart)`
+
+The variables in the data are `r colnames(tidy_instacart)`
+```{r}
+aisle_number = 
+  tidy_instacart|>
+  pull(
+    aisle_id
+  )|>
+  unique()|>
+  length()
+
+aisle_ordered = tidy_instacart|>
+  group_by(aisle)|>
+  summarize(n_obs = n())|>
+  arrange(desc(n_obs))
+
+head(aisle_ordered)
+```
+
+There are `r aisle_number` unique aisle in the dataset, and the most consumed aisle is `r aisle_ordered[1, 1]`. 
+
+```{r}
+aisle_plot = aisle_ordered|>
+  subset(
+    n_obs >= 10000
+  )|>
+  arrange(desc(n_obs))|>
+  ggplot(aes(x = reorder(aisle, +n_obs), y = n_obs)) + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  coord_flip()
+        
+aisle_plot
+```
+
+```{r}
+popular_baking_ingredients_df = tidy_instacart|>
+  subset(
+    aisle == "baking ingredients"
+  )|>
+  group_by(product_name)|>
+  summarize(n_obs = n())|>
+  arrange(desc(n_obs)) |>
+  head(3)|>
+  mutate(
+    category = "baking ingredients"
+  )
+popular_baking_ingredients_df
+```
+
+```{r}
+popular_dog_food_care_df = tidy_instacart|>
+  subset(
+    aisle == "dog food care"
+  )|>
+  group_by(product_name)|>
+  summarize(n_obs = n())|>
+  arrange(desc(n_obs)) |>
+  head(3)|>
+  mutate(
+    category = "dog food care"
+  )
+popular_dog_food_care_df
+```
+
+```{r}
+popular_packaged_vegetables_fruits_df = tidy_instacart|>
+  subset(
+    aisle == "packaged vegetables fruits"
+  )|>
+  group_by(product_name)|>
+  summarize(n_obs = n())|>
+  arrange(desc(n_obs)) |>
+  head(3)|>
+  mutate(
+    category = "packaged vegetables fruits"
+  )
+popular_packaged_vegetables_fruits_df
+```
+
+```{r}
+three_items_merged = bind_rows(
+  popular_baking_ingredients_df, 
+  popular_dog_food_care_df, 
+  popular_packaged_vegetables_fruits_df)|>
+  arrange(desc(n_obs))
+  
+three_items_merged
+```
+
+```{r}
+apples_coffee_df = tidy_instacart|>
+  subset(
+    product_name == "Pink Lady Apples" | product_name == "Coffee Ice Cream"
+  )|>
+  group_by(order_dow)|>
+  summarize(
+    mean_hour = mean(order_hour_of_day, na.rm = TRUE)
+  )|>
+  mutate(
+    order_dow = case_match(
+      order_dow, 
+      0 ~ "Sunday", 
+      1 ~ "Monday", 
+      2 ~ "Tuesday", 
+      3 ~ "Wednesday", 
+      4 ~ "Thursday", 
+      5 ~ "Friday", 
+      6 ~ "Saturday"
+    )
+  )
+
+apples_coffee_df
+```
+
+
+
+

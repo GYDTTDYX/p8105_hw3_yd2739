@@ -32,7 +32,8 @@ aisle_ordered = tidy_instacart|>
   summarize(n_obs = n())|>
   arrange(desc(n_obs))
 
-head(aisle_ordered)
+head(aisle_ordered)|>
+  knitr::kable()
 ```
 
 There are `r aisle_number` unique aisle in the dataset, and the most consumed aisle is `r aisle_ordered[1, 1]`. 
@@ -63,7 +64,8 @@ popular_baking_ingredients_df = tidy_instacart|>
   mutate(
     category = "baking ingredients"
   )
-popular_baking_ingredients_df
+popular_baking_ingredients_df|>
+  knitr::kable()
 ```
 
 ```{r}
@@ -78,7 +80,8 @@ popular_dog_food_care_df = tidy_instacart|>
   mutate(
     category = "dog food care"
   )
-popular_dog_food_care_df
+popular_dog_food_care_df|>
+  knitr::kable()
 ```
 
 ```{r}
@@ -93,7 +96,8 @@ popular_packaged_vegetables_fruits_df = tidy_instacart|>
   mutate(
     category = "packaged vegetables fruits"
   )
-popular_packaged_vegetables_fruits_df
+popular_packaged_vegetables_fruits_df|>
+  knitr::kable()
 ```
 
 ```{r}
@@ -101,7 +105,8 @@ three_items_merged = bind_rows(
   popular_baking_ingredients_df, 
   popular_dog_food_care_df, 
   popular_packaged_vegetables_fruits_df)|>
-  arrange(desc(n_obs))
+  arrange(desc(n_obs))|>
+  knitr::kable()
   
 three_items_merged
 ```
@@ -111,7 +116,7 @@ apples_coffee_df = tidy_instacart|>
   subset(
     product_name == "Pink Lady Apples" | product_name == "Coffee Ice Cream"
   )|>
-  group_by(order_dow)|>
+  group_by(order_dow, product_name)|>
   summarize(
     mean_hour = mean(order_hour_of_day, na.rm = TRUE)
   )|>
@@ -126,7 +131,8 @@ apples_coffee_df = tidy_instacart|>
       5 ~ "Friday", 
       6 ~ "Saturday"
     )
-  )
+  )|>
+  knitr::kable(digits = 1)
 
 apples_coffee_df
 ```

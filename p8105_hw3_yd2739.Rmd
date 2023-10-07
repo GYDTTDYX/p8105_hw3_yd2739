@@ -261,7 +261,7 @@ sex_vs_edu_age_df  = merged_acc_info_df|>
 
 sex_vs_edu_age_plot = merged_acc_info_df|>
   ggplot(aes(x = age, color = sex))+
-  geom_histogram(fill = "white")+
+  geom_density()+
   facet_grid(. ~ education)
 sex_vs_edu_age_plot
 ```

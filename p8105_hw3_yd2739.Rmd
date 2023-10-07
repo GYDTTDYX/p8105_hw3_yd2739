@@ -148,10 +148,10 @@ BRFSS_cleaned = brfss_smart2010 |>
     topic == "Overall Health"
   )|>
   subset(
-    response == "Excellent" | response == "Very Good" | response == "Good"|response == "Fair"|response == "Poor"
+    response == "Excellent" | response == "Very good" | response == "Good"|response == "Fair"|response == "Poor"
   )|>
   mutate(
-    response = factor(response, level=c("Poor", "Fair", "Good", "Very Good", "Excellent"))
+    response = factor(response, level=c("Poor", "Fair", "Good", "Very good", "Excellent"))
   )
 ```
 
@@ -206,9 +206,11 @@ NY_distribution_df = BRFSS_cleaned|>
   )
 
 NY_distribution_plot = NY_distribution_df|>
-  ggplot(aes(x = data_value, fill = locationdesc)) + 
-  geom_density(alpha = .3, adjust = .75)+
-  facet_grid(. ~ year)
+  ggplot(aes(x = locationdesc, y = data_value, fill = response)) + 
+  geom_col(position = 'stack', width = 0.6)+
+  facet_grid(. ~ year)+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  coord_flip()
 
 NY_distribution_plot
 ```

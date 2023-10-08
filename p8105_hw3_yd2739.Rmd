@@ -238,6 +238,16 @@ NY_distribution_heatmap = NY_distribution_df|>
 NY_distribution_heatmap
 ```
 
+```{r}
+NY_distribution_boxplot = NY_distribution_df|>
+  ggplot(aes(x = response, y = data_value)) + 
+  geom_boxplot()+
+  facet_grid(. ~ year)+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))+
+  coord_flip()
+NY_distribution_boxplot
+```
+
 ## Problem 3
 ```{r}
 #import data and data cleaning

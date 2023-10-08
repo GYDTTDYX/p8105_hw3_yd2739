@@ -215,6 +215,15 @@ NY_distribution_plot = NY_distribution_df|>
 NY_distribution_plot
 ```
 
+```{r}
+NY_distribution_heatmap = NY_distribution_df|>
+  ggplot(aes(x = locationdesc, y = response, fill = data_value)) + 
+  geom_tile()+
+  facet_grid(. ~ year)+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+NY_distribution_heatmap
+```
+
 ## Problem 3
 ```{r}
 #import data and data cleaning

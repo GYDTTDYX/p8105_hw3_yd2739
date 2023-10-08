@@ -11,6 +11,7 @@ library(p8105.datasets)
 ## Problem 1
 
 ```{r}
+#load dataset and make the variable name tidy
 data("instacart")
 tidy_instacart = instacart |>
   janitor::clean_names()
@@ -18,7 +19,10 @@ tidy_instacart = instacart |>
 the size of the dataset is `r nrow(tidy_instacart)` x `r ncol(tidy_instacart)`
 
 The variables in the data are `r colnames(tidy_instacart)`
+
+#### calculate aisle number and order aisle by their frequency and find item ordered most
 ```{r}
+
 aisle_number = 
   tidy_instacart|>
   pull(
@@ -38,7 +42,9 @@ head(aisle_ordered)|>
 
 There are `r aisle_number` unique aisle in the dataset, and the most consumed aisle is `r aisle_ordered[1, 1]`. 
 
+#### select aisle appeared more than 10000 times and make plot about the frequency and their name
 ```{r}
+
 aisle_plot = aisle_ordered|>
   subset(
     n_obs >= 10000
@@ -52,7 +58,9 @@ aisle_plot = aisle_ordered|>
 aisle_plot
 ```
 
+#### Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits"
 ```{r}
+
 popular_baking_ingredients_df = tidy_instacart|>
   subset(
     aisle == "baking ingredients"
@@ -111,6 +119,7 @@ three_items_merged = bind_rows(
 three_items_merged
 ```
 
+#### Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. 
 ```{r}
 apples_coffee_df = tidy_instacart|>
   subset(
@@ -139,8 +148,10 @@ apples_coffee_df
 
 
 ## Problem 2
+
+#### data cleaning: load data, tidy col names, select a subset of overall health and factorize response column
 ```{r}
-#data cleaning
+
 data("brfss_smart2010")
 BRFSS_cleaned = brfss_smart2010 |>
   janitor::clean_names()|>
@@ -155,6 +166,7 @@ BRFSS_cleaned = brfss_smart2010 |>
   )
 ```
 
+#### find states were observed at 7 or more locations in 2002 and 2010
 ```{r}
 seven_or_more_2002 = BRFSS_cleaned|>
   subset(year == 2002)|>
@@ -178,8 +190,9 @@ seven_or_more_2010 = BRFSS_cleaned|>
 seven_or_more_2010|>
   knitr::kable()
 ```
-In 2002, `r seven_or_more_2010[[1]]` are states observed at 7 or more locations. 
+In 2010, `r seven_or_more_2010[[1]]` are states observed at 7 or more locations. 
 
+#### average value over time with states for the Excellent response
 ```{r}
 excellent_df = BRFSS_cleaned|>
   subset(
@@ -196,6 +209,7 @@ excellent_plot
 
 I'm not sure this is the plot we required to do. It looks not tidy and hard for any interpretation. 
 
+#### Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses among locations in NY State
 ```{r}
 NY_distribution_df = BRFSS_cleaned|>
   subset(

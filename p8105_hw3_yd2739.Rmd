@@ -207,7 +207,7 @@ excellent_plot = excellent_df|>
 excellent_plot
 ```
 
-I'm not sure this is the plot we required to do. It looks not tidy and hard for any interpretation. 
+It looks hard for interpretation. 
 
 #### Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses among locations in NY State
 ```{r}
@@ -247,6 +247,7 @@ NY_distribution_boxplot = NY_distribution_df|>
 NY_distribution_boxplot
 ```
 
+We could see that the median value of very good increases from 2006 to 2010. 
 ## Problem 3
 ```{r}
 #import data and data cleaning
@@ -294,11 +295,14 @@ sex_vs_edu_age_df  = merged_acc_info_df|>
 sex_vs_edu_age_plot = merged_acc_info_df|>
   ggplot(aes(x = age, color = sex))+
   geom_density()+
-  facet_grid(. ~ education)
+  facet_grid(. ~ education)+
+  labs(title = "distribution of different gender across age in different education level", 
+       x = "Age in years",
+       y = "density ")
 sex_vs_edu_age_plot
 ```
 
-From the plot, we could see the trend that for people who have high school degree, more of them are younger people. For people who have less than high school degree, more of them are older people. 
+From the plot, we could see the trend that for people who have more than high school degree, more of them are younger people. For people who have less than high school degree, more of them are older people. 
 
 ```{r}
 acc_info_agg_df = merged_acc_info_df|>
@@ -310,10 +314,13 @@ agg_age_plot = acc_info_agg_df|>
   ggplot(aes(x = age, y = aggregate_move, color = sex))+
   geom_point(alpha = .5)+
   geom_smooth()+
-  facet_grid(. ~ education)
+  facet_grid(. ~ education)+
+  labs(title = "Overall 24-Hour Activity categorized by Education and Gender", 
+       x = "Age in years",
+       y = "Overall activity value")
 agg_age_plot
 ```
-We could observe that as age exceed 60, all movement starts to decrease. In high school group and more than high school group, females shows higher movement compare to male, while less than high school group, male's movement exceed female's movement. 
+We could observe that as age exceed 60, all movement starts to decrease regardless of age or education level. In high school group and more than high school group, females shows higher movement compare to male, while less than high school group, male's movement exceed female's movement after exceeding 40 years old. Also, the average movement line for high education level people is smoother. 
 ```{r}
 grouped_24hr_avg_df = merged_acc_info_df|>
   group_by(education, sex)|>
@@ -326,7 +333,10 @@ grouped_24hr_avg_df = merged_acc_info_df|>
 grouped_24hr_avg_plot = grouped_24hr_avg_df|>
   ggplot(aes(x = time, y = mean, color = sex))+
   geom_line()+
-  facet_grid(. ~ education)
+  facet_grid(. ~ education)+
+  labs(title = "Average 24-Hour Activity by minutes categorized by Education and Gender", 
+       x = "Time in minutes",
+       y = "Mean activity value")
 grouped_24hr_avg_plot
 ```
 

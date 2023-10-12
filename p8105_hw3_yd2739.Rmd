@@ -204,7 +204,7 @@ excellent_df = BRFSS_cleaned|>
 excellent_plot = excellent_df|>
   ggplot(aes(x = year, y = mean_data_value))+
   geom_line(aes(color = locationabbr))+
-  labs(title = "Average Data Value of 'Excellent' Responses Over Time", x = "Year", y = "Average Data Value") 
+  labs(title = "Average Data Value of 'Excellent' Responses Over Time") 
 excellent_plot
 ```
 
@@ -226,7 +226,7 @@ NY_distribution_plot = NY_distribution_df|>
   facet_grid(. ~ year)+
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   coord_flip()+
-  labs(title = "Distribution of Data Value of Response Among NY region", x = "Year", y = "Average Data Value") 
+  labs(title = "Distribution of Data Value of Response Among NY region") 
 
 NY_distribution_plot
 ```
@@ -247,7 +247,7 @@ NY_distribution_boxplot = NY_distribution_df|>
   geom_boxplot()+
   facet_grid(. ~ year)+
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))+
-  labs(title = "Distribution of Data Value of Response Among NY", x = "Year", y = "Average Data Value") 
+  labs(title = "Distribution of Data Value of Response Among NY") 
 NY_distribution_boxplot
 ```
 

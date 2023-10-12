@@ -207,7 +207,7 @@ excellent_plot = excellent_df|>
 excellent_plot
 ```
 
-It looks hard for interpretation. 
+It looks hard for interpretation. But there is a state that always has low data value for exellent response. 
 
 #### Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses among locations in NY State
 ```{r}
@@ -247,7 +247,9 @@ NY_distribution_boxplot = NY_distribution_df|>
 NY_distribution_boxplot
 ```
 
-We could see that the median value of very good increases from 2006 to 2010. 
+We could see that the median data_value of very good increases from 2006 to 2010. Also, according to the distribution plot, we could observe that there are three more region included in 2010 compare with 2006. As regions changed, it might be not appropriate to use box plot to show the difference in data value. 
+
+
 ## Problem 3
 ```{r}
 #import data and data cleaning

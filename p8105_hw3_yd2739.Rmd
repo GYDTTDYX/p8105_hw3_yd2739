@@ -322,7 +322,7 @@ agg_age_plot = acc_info_agg_df|>
        y = "Overall activity value")
 agg_age_plot
 ```
-We could observe that as age exceed 60, all movement starts to decrease regardless of age or education level. In high school group and more than high school group, females shows higher movement compare to male, while less than high school group, male's movement exceed female's movement after exceeding 40 years old. Also, the average movement line for high education level people is smoother. 
+We could observe that as age exceed 60, all activity starts to decrease regardless of age or education level. In high school group and more than high school group, females shows higher activity compare to male, while less than high school group, male's activity exceed female's activity after exceeding 40 years old. Also, the average activity line for high education level people is smoother. 
 ```{r}
 grouped_24hr_avg_df = merged_acc_info_df|>
   group_by(education, sex)|>

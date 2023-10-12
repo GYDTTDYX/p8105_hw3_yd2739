@@ -342,4 +342,23 @@ grouped_24hr_avg_plot = grouped_24hr_avg_df|>
 grouped_24hr_avg_plot
 ```
 
-We could observe from the graph that for people have more than high school degree, average movement for female is higher than average movement for male.A All people shows low movement from 0 to 250min, this is probably they are sleeping. 
+```{r}
+grouped_24hr_smooth_plot = merged_acc_info_df|>
+  pivot_longer(cols = starts_with("min"), names_to = "time", values_to = "time_movement")|>
+  mutate(
+    time = substring(time, 4), 
+    time= as.numeric(time)
+  )|>
+  group_by(education, sex, time)|>
+  summarise(mean_activity = mean(time_movement))|>
+  ggplot(aes(x = time, y = mean_activity, color = sex))+
+  geom_point(alpha = .2)+
+  geom_smooth()+
+  facet_grid(. ~ education)+
+  labs(title = "24-Hour Activity by minutes categorized by Education and Gender", 
+       x = "Time in minutes",
+       y = "activity value")
+grouped_24hr_smooth_plot
+```
+
+We could observe from the graph that for people have more than high school degree, average movement for female is higher than average movement for male.A All people shows low movement from 0 to 250min, this is probably they are sleeping. While ther is a peak of movement for people who are less than high school, the average movement curve is relatively smoother for high school or more than high school people

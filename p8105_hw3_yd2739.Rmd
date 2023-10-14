@@ -208,7 +208,7 @@ excellent_plot = excellent_df|>
 excellent_plot
 ```
 
-It looks hard for interpretation. But there is a state that always has low data value for exellent response. 
+It looks hard for interpretation. But there is a state that always has low data value for excellent response. We could also observe that most state has mean data value for excellent response of 15-30. 
 
 #### Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses among locations in NY State
 ```{r}
@@ -293,6 +293,7 @@ sex_vs_edu_df  = merged_acc_info_df|>
 sex_vs_edu_df|>knitr::kable()
 ```
 
+From the table we could see that education level seems distributed equally in male and female, while there are more people have education level more than high school in our dataset. 
 ```{r}
 sex_vs_edu_age_df  = merged_acc_info_df|>
   group_by(sex, education)|>
@@ -326,18 +327,23 @@ agg_age_plot = acc_info_agg_df|>
        y = "Overall activity value")
 agg_age_plot
 ```
+
 We could observe that as age exceed 60, all activity starts to decrease regardless of age or education level. In high school group and more than high school group, females shows higher activity compare to male, while less than high school group, male's activity exceed female's activity after exceeding 40 years old. Also, the average activity line for high education level people is smoother. 
 ```{r}
-grouped_24hr_avg_df = merged_acc_info_df|>
-  group_by(education, sex)|>
-  summarise(across(starts_with("min"), ~ mean(.), .names = "mean_{.col}"))|>
-  pivot_longer(cols = starts_with("mean_"), names_to = "time", values_to = "mean")|>
+#create pivoted df for next step
+merged_pivoted_df = merged_acc_info_df|>
+  pivot_longer(cols = starts_with("min"), names_to = "time", values_to = "time_movement")|>
   mutate(
-    time = substring(time, 9), 
+    time = substring(time, 4), 
     time= as.numeric(time)
   )
-grouped_24hr_avg_plot = grouped_24hr_avg_df|>
-  ggplot(aes(x = time, y = mean, color = sex))+
+```
+
+```{r}
+grouped_24hr_avg_plot = merged_pivoted_df|>
+  group_by(education, sex, time)|>
+  summarise(mean_activity = mean(time_movement))|>
+  ggplot(aes(x = time, y = mean_activity, color = sex))+
   geom_line()+
   facet_grid(. ~ education)+
   labs(title = "Average 24-Hour Activity by minutes categorized by Education and Gender", 
@@ -347,12 +353,7 @@ grouped_24hr_avg_plot
 ```
 
 ```{r}
-grouped_24hr_median_plot = merged_acc_info_df|>
-  pivot_longer(cols = starts_with("min"), names_to = "time", values_to = "time_movement")|>
-  mutate(
-    time = substring(time, 4), 
-    time= as.numeric(time)
-  )|>
+grouped_24hr_median_plot = merged_pivoted_df|>
   group_by(education, sex, time)|>
   summarise(median_activity = median(time_movement))|>
   ggplot(aes(x = time, y = median_activity, color = sex))+
@@ -365,12 +366,7 @@ grouped_24hr_median_plot
 ```
 
 ```{r}
-grouped_24hr_smooth_plot = merged_acc_info_df|>
-  pivot_longer(cols = starts_with("min"), names_to = "time", values_to = "time_movement")|>
-  mutate(
-    time = substring(time, 4), 
-    time= as.numeric(time)
-  )|>
+grouped_24hr_smooth_plot = merged_pivoted_df|>
   group_by(education, sex)|>
   ggplot(aes(x = time, y = time_movement, color = sex))+
   geom_point(alpha = .2)+

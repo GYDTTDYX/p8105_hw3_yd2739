@@ -151,7 +151,6 @@ apples_coffee_df
 
 #### data cleaning: load data, tidy col names, select a subset of overall health and factorize response column
 ```{r}
-
 data("brfss_smart2010")
 BRFSS_cleaned = brfss_smart2010 |>
   janitor::clean_names()|>
@@ -163,7 +162,8 @@ BRFSS_cleaned = brfss_smart2010 |>
   )|>
   mutate(
     response = factor(response, level=c("Poor", "Fair", "Good", "Very good", "Excellent"))
-  )
+  )|>
+  distinct()
 ```
 
 #### find states were observed at 7 or more locations in 2002 and 2010
